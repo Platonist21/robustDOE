@@ -1,0 +1,41 @@
+---
+title: "Define the Response Variables of Robustness DOE"
+author: "Charles Tan"
+format: html
+editor: visual
+---
+
+## Notations
+
+For an assay robustness DOE:
+
+-   Let $N$ denote total number of runs, say 24
+-   Let $n$ denote total number of center runs, say 8
+-   Let $K$ donate total number of samples, say 14 or 22
+-   Let $T_{k,i}$ denote the observed titer or concentration of $k$th sample under $i$th condition
+-   Let $i=0$ denote the center point condition
+-   Let $i>0$ (positive integer) denote non-center point condition
+-   Let $\mu_{k}$ denote the true titer or concentration of $k$th under center condition
+
+## Model
+
+$T_{k,i} = \mu_{k} + \delta_{i} + \epsilon_{k,i}$
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
