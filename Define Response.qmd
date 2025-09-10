@@ -1,6 +1,7 @@
 ---
 title: "Define the Response Variables of Robustness DOE"
 author: "Charles Tan"
+date: today
 format: html
 editor: visual
 ---
@@ -11,31 +12,29 @@ For an assay robustness DOE:
 
 -   Let $N$ denote total number of runs, say 24
 -   Let $n$ denote total number of center runs, say 8
+-   Let $i=0$ index the center point condition
+-   Let $i=1,2,…,N-n$ index the non center point conditions
+-   Let $X_i$ denote the row for condition $i$ in the design matrix
 -   Let $K$ donate total number of samples, say 14 or 22
--   Let $T_{k,i}$ denote the observed titer or concentration of $k$th sample under $i$th condition
--   Let $i=0$ denote the center point condition
--   Let $i>0$ (positive integer) denote non-center point condition
--   Let $\mu_{k}$ denote the true titer or concentration of $k$th under center condition
+-   Let $T_{i,k}$ denote the observed log titer or log concentration of $k$th sample under $i$th condition
+-   Let $\mu_{k}$ denote the mean log titer or log concentration of $k$th under center condition, $\mu_k=E(T_{0,k})$
 
-## Model
+## Primary Response
 
-$T_{k,i} = \mu_{k} + \delta_{i} + \epsilon_{k,i}$
+For each non center point condition, $T_{i,k}-\mu_k$ is the deviation from center point. Define $Y_i=E(T_{i,k}-\mu_k)^2$ where the expectation is over all samples $k$. This $Y_i$ is on the same scale as variance on the log scale, which has a one-to-one translation to %RSD scale. We can build a model $Y \sim X$ using SVEM to predict $Y$ given condition $X$, then impose a criterion on the $Y$ surface on the %RSD scale. If the whole $Y$ surface is below the criterion, we can conclude the assay is robust within the range of the design of the experiment.
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+The definition of $Y_i$ involves $K$ unknown (nuisance) parameter $\mu_{k}$. The simplest estimator of $\mu_{k}$ is $m_k=\frac{1}{n} \sum T_{0,k}$, then $Y_i$ can be calculated as $\frac{1}{K} \sum{(T_{i,k}-m_k)^2}$.
 
-## Running Code
+## Secondary Response
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+If the predicted $Y$ in some part of the design space is above the acceptance criterion, the natural followup question is why. The logical place to start the investigation is to look at bias induced by conditions. Define $Z_i=E(T_{i,k}-\mu_k)$, again, where the expectation is over all samples $k$. It assumes that the bias is constant across samples at condition $i$. It can serve as the secondary response variable useful for investigation.
 
-```{r}
-1 + 1
-```
+Plugging in $m_k$, we can calculate $Z_i$ as $\frac{1}{K} \sum{(T_{i,k}-m_k)}$.
 
-You can add options to executable code like this
+## At Center Point
 
-```{r}
-#| echo: false
-2 * 2
-```
+By definition, $Z_0=0$ and $Y_0$ is just pooled measurement variability (precision).
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Better Way
+
+There is a relationship between $Y_i$ and $Z_i$: $Y_i=Z_i^2+Var(T_{i,k})$
