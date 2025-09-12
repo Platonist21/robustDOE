@@ -2,7 +2,9 @@
 title: "Define the Response Variables of Robustness DOE"
 author: "Charles Tan"
 date: today
-format: pdf
+format:
+  html:  
+    embed-resources: true
 editor: visual
 ---
 
@@ -31,16 +33,22 @@ If the predicted $Y$ in some part of the design space is above the acceptance cr
 
 Plugging in $m_k$, we have the simple naive estimator of $Z_i$ as $\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)}$.
 
-## At Center Point
-
-By definition, $Z_0=0$ and $Y_0=\frac{1}{K}\sum_{k}Var(T_{0,k})$, which is the average measurement variability (precision).
-
 ## Relationship
 
 Under the assumption that the bias and variability are constant across samples at condition $i$, (but not necessarily across $i$,) there is a relationship between $Y_i$ and $Z_i$: $Y_i=Z_i^2+Var(T_{i,.})$. This relationship allows us to breakdown the reasons for $Y$ to be large: bias or random measurement variability or both.
 
 ## Model Averaging
 
+At each condition $i$, there are at least two different scenarios:
+
+The first scenario is that all the differences of $T_{i,k}-\mu_k$ are just measurement variability, i.e., $T_{i,k}-\mu_k=\epsilon_{i,k}$. Under this model, $\hat{Y_i}=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}$.
+
+The second scenario is that there are both bias and variability in $T_{i,k}-\mu_k$, i.e., $T_{i,k}-\mu_k=\delta_i+\epsilon_{i,k}$. Under this model,
+
 The response variables $Y$ and $Z$ need to be estimated. Under different assumptions about the homogeneity of the bias and variability across different condition $i$, the naive estimators of $Y_i$ and $Z_i$ could be improved if we have sufficiently large $K$ at condition $i$. Four different model assumptions are described below, and their associated estimators of $Y_i$ and $Z_i$ are listed.
 
 Furthermore, we don't have to "pick a model". We can do "model averaging" by weighting different estimators according to their Akaike weights.
+
+## At Center Point
+
+By definition, $Z_0=0$ and $Y_0=\frac{1}{K}\sum_{k}Var(T_{0,k})$, which is the average measurement variability (precision).
