@@ -2,9 +2,7 @@
 title: "Define the Response Variables of Robustness DOE"
 author: "Charles Tan"
 date: today
-format:
-  html:  
-    embed-resources: true
+format: pdf
 editor: visual
 ---
 

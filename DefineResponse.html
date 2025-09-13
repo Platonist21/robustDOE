@@ -3253,7 +3253,9 @@ window.Quarto = {
 </section>
 <section id="model-averaging" class="level2">
 <h2 class="anchored" data-anchor-id="model-averaging">Model Averaging</h2>
-<p>Under Condition <span class="math inline">\(i\)</span>, there are at least</p>
+<p>At each condition <span class="math inline">\(i\)</span>, there are at least two different scenarios:</p>
+<p>The first scenario is that all the differences of <span class="math inline">\(T_{i,k}-\mu_k\)</span> are just measurement variability, i.e., <span class="math inline">\(T_{i,k}-\mu_k=\epsilon_{i,k}\)</span>. Under this model, <span class="math inline">\(\hat{Y_i}=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}\)</span>.</p>
+<p>The second scenario is that there are both bias and variability in <span class="math inline">\(T_{i,k}-\mu_k\)</span>, i.e., <span class="math inline">\(T_{i,k}-\mu_k=\delta_i+\epsilon_{i,k}\)</span>. Under this model,</p>
 <p>The response variables <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> need to be estimated. Under different assumptions about the homogeneity of the bias and variability across different condition <span class="math inline">\(i\)</span>, the naive estimators of <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span> could be improved if we have sufficiently large <span class="math inline">\(K\)</span> at condition <span class="math inline">\(i\)</span>. Four different model assumptions are described below, and their associated estimators of <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span> are listed.</p>
 <p>Furthermore, we don’t have to “pick a model”. We can do “model averaging” by weighting different estimators according to their Akaike weights.</p>
 </section>
