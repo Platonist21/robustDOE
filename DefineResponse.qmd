@@ -2,7 +2,9 @@
 title: "Define the Response Variables of Robustness DOE"
 author: "Charles Tan"
 date: today
-format: pdf
+format:
+  html:  
+    embed-resources: true
 editor: visual
 ---
 
@@ -21,32 +23,46 @@ For an assay robustness DOE:
 
 ## Primary Response
 
-For each non center point condition, $T_{i,k}-\mu_k$ is the deviation from center point. Define $Y_i=E(T_{i,k}-\mu_k)^2$ where the expectation is over all samples $k$. This $Y_i$ is on the same scale as variance on the log scale, which has a one-to-one translation to %RSD scale. We can build a model $Y \sim X$ using SVEM to predict $Y$ given condition $X$, then impose a criterion on the $Y$ surface on the %RSD scale. If the whole $Y$ surface is below the criterion, we can conclude the assay is robust within the range of the design of the experiment.
+At each non center point condition, $T_{i,k}-\mu_k$ is the deviation from center point. Define $Y_i=E(T_{i,k}-\mu_k)^2$ where the expectation is over all samples $k$. This $Y_i$ is on the same scale as variance on the log scale, which has a one-to-one translation to %RSD scale. We can build a model $Y \sim X$ using SVEM to predict $Y_i$ given condition $X_i$, then impose a criterion on the $Y$ surface on the %RSD scale. If the whole $Y$ surface is below the criterion, we can conclude the assay is robust within the range of the design of the experiment.
 
 The definition of $Y_i$ involves $K$ unknown (nuisance) parameters $\mu_{k}$. The simplest estimator of $\mu_{k}$ is $m_k=\frac{1}{n} \sum T_{0,k}$, then the simple naive estimator of $Y_i$ is $\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}$.
 
 ## Secondary Response
 
-If the predicted $Y$ in some part of the design space is above the acceptance criterion, the natural followup question is why. The logical place to start the investigation is to look at bias induced by conditions. Define $Z_i=E(T_{i,k}-\mu_k)$, again, the expectation is over all samples $k$. It can serve as the secondary response variable useful for investigation.
+If the predicted $Y$ in some part of the design space is above the acceptance criterion, the natural followup question is why. The logical place to start the investigation is to look at bias induced by the conditions. Define $Z_i=E(T_{i,k}-\mu_k)$, again, the expectation is over all samples $k$. It can serve as the secondary response variable useful for investigation.
 
 Plugging in $m_k$, we have the simple naive estimator of $Z_i$ as $\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)}$.
 
-## Relationship
+## Key Idea
 
-Under the assumption that the bias and variability are constant across samples at condition $i$, (but not necessarily across $i$,) there is a relationship between $Y_i$ and $Z_i$: $Y_i=Z_i^2+Var(T_{i,.})$. This relationship allows us to breakdown the reasons for $Y$ to be large: bias or random measurement variability or both.
+The key idea is that, instead of using the observations of $T_{i,k}$ directly as the response variable, we propose to use the second-order moment $Y_i$ and first-order moment $Z_i$, as the response variables for the analysis of assay robustness. Here, the distributional assumption is that, at given condition $i$, the samples have the same bias and variability. This assumption is pertinent because assay robustness is an assay property, not sample property. The sample set we happen to use is meant to represent all samples. Note that this assumption allows the bias and variability to be different at different condition $i$'s.
+
+There is an implication of this assumption for the design of the experiment: at each condition $i$, more samples are more informative than more replications of the same samples.
+
+At given condition $i$, there is a relationship between $Y_i$ and $Z_i$: $Y_i=Z_i^2+Var(T_{i,.})$. This relationship allows us to breakdown the reasons for $Y$ to be large: bias or random measurement variability or both.
 
 ## Model Averaging
 
-At each condition $i$, there are at least two different scenarios:
+At each condition $i>0$, there are two different scenarios:
 
-The first scenario is that all the differences of $T_{i,k}-\mu_k$ are just measurement variability, i.e., $T_{i,k}-\mu_k=\epsilon_{i,k}$. Under this model, $\hat{Y_i}=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}$.
+The first scenario is that all the differences of $T_{i,k}-\mu_k$ are just measurement variability, i.e., $T_{i,k}-\mu_k=\epsilon_{i,k}$. Under this model, the maximum likelihood estimator for $Y_i$ is $Y_i^*=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}$. (We can define $Z_i^*=0$.)
 
-The second scenario is that there are both bias and variability in $T_{i,k}-\mu_k$, i.e., $T_{i,k}-\mu_k=\delta_i+\epsilon_{i,k}$. Under this model,
+The second scenario is that there are both a constant bias and measurement variability in $T_{i,k}-\mu_k$, i.e., $T_{i,k}-\mu_k=\delta_i+\epsilon_{i,k}$. Under this model, the maximum likelihood estimators for the moments are as $Z_i^{**}=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)}$ and $Y_i^{**}=Z_i^{**2}+\frac{1}{K-1} \sum_{k}{(T_{i,k}-m_k-Z_i^{**})^2}$.
 
-The response variables $Y$ and $Z$ need to be estimated. Under different assumptions about the homogeneity of the bias and variability across different condition $i$, the naive estimators of $Y_i$ and $Z_i$ could be improved if we have sufficiently large $K$ at condition $i$. Four different model assumptions are described below, and their associated estimators of $Y_i$ and $Z_i$ are listed.
+The two naive estimators are from two different scenarios / models, hence, are not congruent with each other.
 
-Furthermore, we don't have to "pick a model". We can do "model averaging" by weighting different estimators according to their Akaike weights.
+Furthermore, we don't have to "pick a model". We can do "model averaging" by weighting the two sets of ML estimators according to their Akaike weights, i.e.,
+
+$\hat{Y_i}=Aw_i^* \cdot Y_i^*+Aw_i^{**} \cdot Y_i^{**}$ and $\hat{Z_i}=Aw_i^* \cdot Z_i^*+Aw_i^{**} \cdot Z_i^{**}$.
+
+Akaike weights should be obtained from $AIC_c$ of both models since $K$ is usually small to moderate. For now, let's assume, at condition $i>0$, we have one reportable value for each of the $K$ sample.
+
+The first model corresponds to $N(0, \sigma^2)$, hence, $AIC_c^*=K \cdot log(2\pi) + K \cdot log(Y_i^*) +K+\frac{2K}{K-2}$.
+
+The second model corresponds to $N(\mu, \sigma^2)$, hence, $AIC_c^{**}=K \cdot log(2\pi) + K \cdot log(Y_i^{**}) +K+\frac{4K}{K-3}$.
+
+Let $A_{min}$ denote $\min(AIC_c^* , AIC_c^{**})$, define $\Delta AIC_c^*=AIC_c^* - A_{min}$ and $\Delta AIC_c^{**}=AIC_c^{**} - A_{min}$. Then $Aw_i^*=\frac{\exp(-0.5\cdot \Delta AIC_c^*)}{\exp(-0.5\cdot \Delta AIC_c^*)+\exp(-0.5\cdot \Delta AIC_c^{**})}$ and $Aw_i^{**}=\frac{\exp(-0.5\cdot \Delta AIC_c^{**})}{\exp(-0.5\cdot \Delta AIC_c^*)+\exp(-0.5\cdot \Delta AIC_c^{**})}$.
 
 ## At Center Point
 
-By definition, $Z_0=0$ and $Y_0=\frac{1}{K}\sum_{k}Var(T_{0,k})$, which is the average measurement variability (precision).
+For the analysis by SVEM, we can define $\hat{Z_0}=0$ and $\hat{Y_0}=\frac{1}{K} \sum_k{(T_{0,k}-m_k)^2}$.

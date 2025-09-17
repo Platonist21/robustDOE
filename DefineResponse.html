@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Charles Tan">
-<meta name="dcterms.date" content="2025-09-12">
+<meta name="dcterms.date" content="2025-09-17">
 
 <title>Define the Response Variables of Robustness DOE</title>
 <style>
@@ -3211,7 +3211,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 12, 2025</p>
+      <p class="date">September 17, 2025</p>
     </div>
   </div>
   
@@ -3239,29 +3239,36 @@ window.Quarto = {
 </section>
 <section id="primary-response" class="level2">
 <h2 class="anchored" data-anchor-id="primary-response">Primary Response</h2>
-<p>For each non center point condition, <span class="math inline">\(T_{i,k}-\mu_k\)</span> is the deviation from center point. Define <span class="math inline">\(Y_i=E(T_{i,k}-\mu_k)^2\)</span> where the expectation is over all samples <span class="math inline">\(k\)</span>. This <span class="math inline">\(Y_i\)</span> is on the same scale as variance on the log scale, which has a one-to-one translation to %RSD scale. We can build a model <span class="math inline">\(Y \sim X\)</span> using SVEM to predict <span class="math inline">\(Y\)</span> given condition <span class="math inline">\(X\)</span>, then impose a criterion on the <span class="math inline">\(Y\)</span> surface on the %RSD scale. If the whole <span class="math inline">\(Y\)</span> surface is below the criterion, we can conclude the assay is robust within the range of the design of the experiment.</p>
+<p>At each non center point condition, <span class="math inline">\(T_{i,k}-\mu_k\)</span> is the deviation from center point. Define <span class="math inline">\(Y_i=E(T_{i,k}-\mu_k)^2\)</span> where the expectation is over all samples <span class="math inline">\(k\)</span>. This <span class="math inline">\(Y_i\)</span> is on the same scale as variance on the log scale, which has a one-to-one translation to %RSD scale. We can build a model <span class="math inline">\(Y \sim X\)</span> using SVEM to predict <span class="math inline">\(Y_i\)</span> given condition <span class="math inline">\(X_i\)</span>, then impose a criterion on the <span class="math inline">\(Y\)</span> surface on the %RSD scale. If the whole <span class="math inline">\(Y\)</span> surface is below the criterion, we can conclude the assay is robust within the range of the design of the experiment.</p>
 <p>The definition of <span class="math inline">\(Y_i\)</span> involves <span class="math inline">\(K\)</span> unknown (nuisance) parameters <span class="math inline">\(\mu_{k}\)</span>. The simplest estimator of <span class="math inline">\(\mu_{k}\)</span> is <span class="math inline">\(m_k=\frac{1}{n} \sum T_{0,k}\)</span>, then the simple naive estimator of <span class="math inline">\(Y_i\)</span> is <span class="math inline">\(\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}\)</span>.</p>
 </section>
 <section id="secondary-response" class="level2">
 <h2 class="anchored" data-anchor-id="secondary-response">Secondary Response</h2>
-<p>If the predicted <span class="math inline">\(Y\)</span> in some part of the design space is above the acceptance criterion, the natural followup question is why. The logical place to start the investigation is to look at bias induced by conditions. Define <span class="math inline">\(Z_i=E(T_{i,k}-\mu_k)\)</span>, again, the expectation is over all samples <span class="math inline">\(k\)</span>. It can serve as the secondary response variable useful for investigation.</p>
+<p>If the predicted <span class="math inline">\(Y\)</span> in some part of the design space is above the acceptance criterion, the natural followup question is why. The logical place to start the investigation is to look at bias induced by the conditions. Define <span class="math inline">\(Z_i=E(T_{i,k}-\mu_k)\)</span>, again, the expectation is over all samples <span class="math inline">\(k\)</span>. It can serve as the secondary response variable useful for investigation.</p>
 <p>Plugging in <span class="math inline">\(m_k\)</span>, we have the simple naive estimator of <span class="math inline">\(Z_i\)</span> as <span class="math inline">\(\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)}\)</span>.</p>
 </section>
-<section id="relationship" class="level2">
-<h2 class="anchored" data-anchor-id="relationship">Relationship</h2>
-<p>Under the assumption that the bias and variability are constant across samples at condition <span class="math inline">\(i\)</span>, (but not necessarily across <span class="math inline">\(i\)</span>,) there is a relationship between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span>: <span class="math inline">\(Y_i=Z_i^2+Var(T_{i,.})\)</span>. This relationship allows us to breakdown the reasons for <span class="math inline">\(Y\)</span> to be large: bias or random measurement variability or both.</p>
+<section id="key-idea" class="level2">
+<h2 class="anchored" data-anchor-id="key-idea">Key Idea</h2>
+<p>The key idea is that, instead of using the observations of <span class="math inline">\(T_{i,k}\)</span> directly as the response variable, we propose to use the second-order moment <span class="math inline">\(Y_i\)</span> and first-order moment <span class="math inline">\(Z_i\)</span>, as the response variables for the analysis of assay robustness. Here, the distributional assumption is that, at given condition <span class="math inline">\(i\)</span>, the samples have the same bias and variability. This assumption is pertinent because assay robustness is an assay property, not sample property. The sample set we happen to use is meant to represent all samples. Note that this assumption allows the bias and variability to be different at different condition <span class="math inline">\(i\)</span>’s.</p>
+<p>There is an implication of this assumption for the design of the experiment: at each condition <span class="math inline">\(i\)</span>, more samples are more informative than more replications of the same samples.</p>
+<p>At given condition <span class="math inline">\(i\)</span>, there is a relationship between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span>: <span class="math inline">\(Y_i=Z_i^2+Var(T_{i,.})\)</span>. This relationship allows us to breakdown the reasons for <span class="math inline">\(Y\)</span> to be large: bias or random measurement variability or both.</p>
 </section>
 <section id="model-averaging" class="level2">
 <h2 class="anchored" data-anchor-id="model-averaging">Model Averaging</h2>
-<p>At each condition <span class="math inline">\(i\)</span>, there are at least two different scenarios:</p>
-<p>The first scenario is that all the differences of <span class="math inline">\(T_{i,k}-\mu_k\)</span> are just measurement variability, i.e., <span class="math inline">\(T_{i,k}-\mu_k=\epsilon_{i,k}\)</span>. Under this model, <span class="math inline">\(\hat{Y_i}=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}\)</span>.</p>
-<p>The second scenario is that there are both bias and variability in <span class="math inline">\(T_{i,k}-\mu_k\)</span>, i.e., <span class="math inline">\(T_{i,k}-\mu_k=\delta_i+\epsilon_{i,k}\)</span>. Under this model,</p>
-<p>The response variables <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> need to be estimated. Under different assumptions about the homogeneity of the bias and variability across different condition <span class="math inline">\(i\)</span>, the naive estimators of <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span> could be improved if we have sufficiently large <span class="math inline">\(K\)</span> at condition <span class="math inline">\(i\)</span>. Four different model assumptions are described below, and their associated estimators of <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span> are listed.</p>
-<p>Furthermore, we don’t have to “pick a model”. We can do “model averaging” by weighting different estimators according to their Akaike weights.</p>
+<p>At each condition <span class="math inline">\(i&gt;0\)</span>, there are two different scenarios:</p>
+<p>The first scenario is that all the differences of <span class="math inline">\(T_{i,k}-\mu_k\)</span> are just measurement variability, i.e., <span class="math inline">\(T_{i,k}-\mu_k=\epsilon_{i,k}\)</span>. Under this model, the maximum likelihood estimator for <span class="math inline">\(Y_i\)</span> is <span class="math inline">\(Y_i^*=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)^2}\)</span>. (We can define <span class="math inline">\(Z_i^*=0\)</span>.)</p>
+<p>The second scenario is that there are both a constant bias and measurement variability in <span class="math inline">\(T_{i,k}-\mu_k\)</span>, i.e., <span class="math inline">\(T_{i,k}-\mu_k=\delta_i+\epsilon_{i,k}\)</span>. Under this model, the maximum likelihood estimators for the moments are as <span class="math inline">\(Z_i^{**}=\frac{1}{K} \sum_{k}{(T_{i,k}-m_k)}\)</span> and <span class="math inline">\(Y_i^{**}=Z_i^{**2}+\frac{1}{K-1} \sum_{k}{(T_{i,k}-m_k-Z_i^{**})^2}\)</span>.</p>
+<p>The two naive estimators are from two different scenarios / models, hence, are not congruent with each other.</p>
+<p>Furthermore, we don’t have to “pick a model”. We can do “model averaging” by weighting the two sets of ML estimators according to their Akaike weights, i.e.,</p>
+<p><span class="math inline">\(\hat{Y_i}=Aw_i^* \cdot Y_i^*+Aw_i^{**} \cdot Y_i^{**}\)</span> and <span class="math inline">\(\hat{Z_i}=Aw_i^* \cdot Z_i^*+Aw_i^{**} \cdot Z_i^{**}\)</span>.</p>
+<p>Akaike weights should be obtained from <span class="math inline">\(AIC_c\)</span> of both models since <span class="math inline">\(K\)</span> is usually small to moderate. For now, let’s assume, at condition <span class="math inline">\(i&gt;0\)</span>, we have one reportable value for each of the <span class="math inline">\(K\)</span> sample.</p>
+<p>The first model corresponds to <span class="math inline">\(N(0, \sigma^2)\)</span>, hence, <span class="math inline">\(AIC_c^*=K \cdot log(2\pi) + K \cdot log(Y_i^*) +K+\frac{2K}{K-2}\)</span>.</p>
+<p>The second model corresponds to <span class="math inline">\(N(\mu, \sigma^2)\)</span>, hence, <span class="math inline">\(AIC_c^{**}=K \cdot log(2\pi) + K \cdot log(Y_i^{**}) +K+\frac{4K}{K-3}\)</span>.</p>
+<p>Let <span class="math inline">\(A_{min}\)</span> denote <span class="math inline">\(\min(AIC_c^* , AIC_c^{**})\)</span>, define <span class="math inline">\(\Delta AIC_c^*=AIC_c^* - A_{min}\)</span> and <span class="math inline">\(\Delta AIC_c^{**}=AIC_c^{**} - A_{min}\)</span>. Then <span class="math inline">\(Aw_i^*=\frac{\exp(-0.5\cdot \Delta AIC_c^*)}{\exp(-0.5\cdot \Delta AIC_c^*)+\exp(-0.5\cdot \Delta AIC_c^{**})}\)</span> and <span class="math inline">\(Aw_i^{**}=\frac{\exp(-0.5\cdot \Delta AIC_c^{**})}{\exp(-0.5\cdot \Delta AIC_c^*)+\exp(-0.5\cdot \Delta AIC_c^{**})}\)</span>.</p>
 </section>
 <section id="at-center-point" class="level2">
 <h2 class="anchored" data-anchor-id="at-center-point">At Center Point</h2>
-<p>By definition, <span class="math inline">\(Z_0=0\)</span> and <span class="math inline">\(Y_0=\frac{1}{K}\sum_{k}Var(T_{0,k})\)</span>, which is the average measurement variability (precision).</p>
+<p>For the analysis by SVEM, we can define <span class="math inline">\(\hat{Z_0}=0\)</span> and <span class="math inline">\(\hat{Y_0}=\frac{1}{K} \sum_k{(T_{0,k}-m_k)^2}\)</span>.</p>
 </section>
 
 </main>
